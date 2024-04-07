@@ -1,10 +1,20 @@
 <?php
-	//include our connection
-	include 'dbconfig.php';
+// Include our connection
+include 'dbconfig.php';
 
-	//delete the row of selected id
-	$sql = "DELETE FROM members WHERE rowid = '".$_GET['id']."'";
-	$db->query($sql);
+// Check if 'id' parameter is provided and is numeric
+if(isset($_GET['id']) && is_numeric($_GET['id'])) {
+    // Sanitize the input
+    $id = $_GET['id'];
 
-	header('location: index.php');
+    // Prepare the delete statement
+    $sql = "DELETE FROM members WHERE rowid = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(1, $id, SQLITE3_INTEGER);
+    $stmt->execute();
+}
+
+// Redirect back to index.php
+header('location: index.php');
+exit;
 ?>
